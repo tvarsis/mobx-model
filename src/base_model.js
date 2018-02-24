@@ -122,7 +122,8 @@ class BaseModel {
         Object.defineProperty(this, actionName, {
             get: function() {
                 return method.bind(this);
-            }
+            },
+            configurable: true
         });
     }
 
@@ -130,7 +131,8 @@ class BaseModel {
         Object.defineProperty(this.prototype, actionName, {
             get: function() {
                 return method.bind(this);
-            }
+            },
+            configurable: true
         });
     }
 
@@ -300,7 +302,8 @@ Object.defineProperty(BaseModel, "urlRoot", {
     },
     set: function(value) {
         this._urlRoot = value;
-    }
+    },
+    configurable: true
 });
 
 Object.defineProperty(BaseModel, "jsonKey", {
@@ -311,7 +314,8 @@ Object.defineProperty(BaseModel, "jsonKey", {
     },
     set: function(value) {
         this._jsonKey = value;
-    }
+    },
+    configurable: true
 });
 
 export default BaseModel;
