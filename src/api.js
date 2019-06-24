@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 
-import superagentDefault from 'superagent';
-import qs from 'qs';
-import BPromise from 'bluebird';
+import superagentDefault from "superagent";
+import qs from "qs";
+import BPromise from "bluebird";
 
-import pick from 'lodash/pick';
-import isFunction from 'lodash/isFunction';
-import isEmpty from 'lodash/isEmpty';
+import pick from "lodash/pick";
+import isFunction from "lodash/isFunction";
+import isEmpty from "lodash/isEmpty";
 
 BPromise.config({
   warnings: true,
@@ -14,46 +14,42 @@ BPromise.config({
   cancellation: true
 });
 
-
 const API = {
-
   config(options = {}) {
-    Object.assign(this, pick(options, [
-      'onRequestError',
-      'onRequestCompleted',
-      'requestData',
-      'requestHeaders',
-      'urlRoot',
-      'superagent'
-    ]))
+    Object.assign(
+      this,
+      pick(options, ["onRequestError", "onRequestCompleted", "requestData", "requestHeaders", "urlRoot", "superagent"])
+    );
   },
 
-	request(options = {}) {
-
-		let { method, data, endpoint, onSuccess, onError, fileData, superagent } = options;
+  request(options = {}) {
+    let { method, data, endpoint, onSuccess, onError, fileData, superagent } = options;
     let requestData, requestHeaders, doRequest;
     const request = superagent || this.superagent || superagentDefault;
 
-		if (!method) { method = 'get' }
-		if (!data) { data = {} }
-		if (!endpoint) {
-			throw new Error('Please provide an endpoint for an API call');
-		}
+    if (!method) {
+      method = "get";
+    }
+    if (!data) {
+      data = {};
+    }
+    if (!endpoint) {
+      throw new Error("Please provide an endpoint for an API call");
+    }
 
-		if (!onSuccess) {
-			onSuccess = (options) => { }
-		}
+    if (!onSuccess) {
+      onSuccess = options => {};
+    }
 
     if (!onError) {
-      onError = (options) => { }
+      onError = options => {};
     }
 
     // set headers
-		doRequest = request[method](this.urlRoot+endpoint);
-
+    doRequest = request[method](this.urlRoot + endpoint);
 
     if (isEmpty(fileData)) {
-      doRequest.accept('json');
+      doRequest.accept("json");
     }
 
     if (isFunction(this.requestHeaders)) {
@@ -70,7 +66,7 @@ const API = {
     if (!isEmpty(fileData)) {
       // merge default requestData with object passed with this request
       if (isFunction(this.requestData)) {
-  		  requestData = this.requestData();
+        requestData = this.requestData();
       } else {
         requestData = this.requestData;
       }
@@ -79,7 +75,7 @@ const API = {
     }
 
     // just send as POST or prepare data for GET request
-    if (method === 'post' || method === 'put') {
+    if (method === "post" || method === "put") {
       if (!isEmpty(fileData)) {
         let formData = new FormData();
         formData.append(fileData.attibuteName, fileData.file);
@@ -87,30 +83,24 @@ const API = {
       } else {
         doRequest.send(data);
       }
-    } else if (method === 'get' || method == 'del') {
-      doRequest.query(
-        qs.stringify(
-          data,
-          { arrayFormat: 'brackets' }
-        )
-      );
+    } else if (method === "get" || method == "del") {
+      doRequest.query(qs.stringify(data, { arrayFormat: "brackets" }));
     }
 
-    return new BPromise( (resolve) => {
-
+    return new BPromise(resolve => {
       // send request and act upon result
-    	doRequest.end( (err, response) => {
+      doRequest.end((err, response) => {
         if (this.onRequestCompleted) this.onRequestCompleted(response);
 
-	      if (!response.ok) {
-	      	//let errors = response.body ? response.body.errors : 'Something bad happened';
-      		//let statusCode = response.status;
+        if (!response || !response.ok) {
+          //let errors = response.body ? response.body.errors : 'Something bad happened';
+          //let statusCode = response.status;
 
-      		if (this.onRequestError) this.onRequestError(response);
+          if (this.onRequestError) this.onRequestError(response, err);
 
           onError(response);
-	      } else {
-	      	onSuccess(response);
+        } else {
+          onSuccess(response);
         }
 
         /*
@@ -121,12 +111,9 @@ const API = {
          */
 
         resolve(response);
-
       });
-
     });
-
-	}
+  }
 };
 
 export default API;
