@@ -84,7 +84,7 @@ const API = {
         doRequest.send(data);
       }
     } else if (method === "get" || method == "del") {
-      doRequest.query(qs.stringify(data, { arrayFormat: "brackets" }));
+      doRequest.retry(3).query(qs.stringify(data, { arrayFormat: "brackets" }));
     }
 
     return new BPromise(resolve => {
