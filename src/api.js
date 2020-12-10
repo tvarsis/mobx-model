@@ -11,19 +11,34 @@ import isEmpty from "lodash/isEmpty";
 BPromise.config({
   warnings: true,
   longStackTraces: true,
-  cancellation: true
+  cancellation: true,
 });
 
 const API = {
   config(options = {}) {
     Object.assign(
       this,
-      pick(options, ["onRequestError", "onRequestCompleted", "requestData", "requestHeaders", "urlRoot", "superagent"])
+      pick(options, [
+        "onRequestError",
+        "onRequestCompleted",
+        "requestData",
+        "requestHeaders",
+        "urlRoot",
+        "superagent",
+      ])
     );
   },
 
   request(options = {}) {
-    let { method, data, endpoint, onSuccess, onError, fileData, superagent } = options;
+    let {
+      method,
+      data,
+      endpoint,
+      onSuccess,
+      onError,
+      fileData,
+      superagent,
+    } = options;
     let requestData, requestHeaders, doRequest;
     const request = superagent || this.superagent || superagentDefault;
 
@@ -38,11 +53,11 @@ const API = {
     }
 
     if (!onSuccess) {
-      onSuccess = options => {};
+      onSuccess = (options) => {};
     }
 
     if (!onError) {
-      onError = options => {};
+      onError = (options) => {};
     }
 
     // set headers
@@ -58,7 +73,7 @@ const API = {
       requestHeaders = this.requestHeaders;
     }
 
-    Object.keys(requestHeaders).forEach(header => {
+    Object.keys(requestHeaders).forEach((header) => {
       doRequest = doRequest.set(header, requestHeaders[header]);
     });
 
@@ -75,7 +90,7 @@ const API = {
     }
 
     // just send as POST or prepare data for GET request
-    if (method === "post" || method === "put") {
+    if (method === "post" || method === "put" || method === "patch") {
       if (!isEmpty(fileData)) {
         let formData = new FormData();
         formData.append(fileData.attibuteName, fileData.file);
@@ -87,7 +102,7 @@ const API = {
       doRequest.retry(3).query(qs.stringify(data, { arrayFormat: "brackets" }));
     }
 
-    return new BPromise(resolve => {
+    return new BPromise((resolve) => {
       // send request and act upon result
       doRequest.end((err, response) => {
         if (this.onRequestCompleted) this.onRequestCompleted(response);
@@ -113,7 +128,7 @@ const API = {
         resolve(response);
       });
     });
-  }
+  },
 };
 
 export default API;
