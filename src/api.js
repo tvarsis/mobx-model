@@ -38,6 +38,7 @@ const API = {
       onError,
       fileData,
       superagent,
+      passedRequestHeaders
     } = options;
     let requestData, requestHeaders, doRequest;
     const request = superagent || this.superagent || superagentDefault;
@@ -71,6 +72,9 @@ const API = {
       requestHeaders = this.requestHeaders();
     } else {
       requestHeaders = this.requestHeaders;
+    }
+    if (passedRequestHeaders) {
+      requestHeaders = { ...requestHeaders, ...passedRequestHeaders };
     }
 
     Object.keys(requestHeaders).forEach((header) => {
