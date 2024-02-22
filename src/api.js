@@ -2,44 +2,20 @@
 
 import superagentDefault from "superagent";
 import qs from "qs";
-import BPromise from "bluebird";
-
 import pick from "lodash/pick";
 import isFunction from "lodash/isFunction";
 import isEmpty from "lodash/isEmpty";
-
-BPromise.config({
-  warnings: true,
-  longStackTraces: true,
-  cancellation: true,
-});
 
 const API = {
   config(options = {}) {
     Object.assign(
       this,
-      pick(options, [
-        "onRequestError",
-        "onRequestCompleted",
-        "requestData",
-        "requestHeaders",
-        "urlRoot",
-        "superagent",
-      ])
+      pick(options, ["onRequestError", "onRequestCompleted", "requestData", "requestHeaders", "urlRoot", "superagent"])
     );
   },
 
   request(options = {}) {
-    let {
-      method,
-      data,
-      endpoint,
-      onSuccess,
-      onError,
-      fileData,
-      superagent,
-      passedRequestHeaders
-    } = options;
+    let { method, data, endpoint, onSuccess, onError, fileData, superagent, passedRequestHeaders } = options;
     let requestData, requestHeaders, doRequest;
     const request = superagent || this.superagent || superagentDefault;
 
@@ -106,14 +82,14 @@ const API = {
       doRequest.retry(3).query(qs.stringify(data, { arrayFormat: "brackets" }));
     }
 
-    return new BPromise((resolve) => {
+    return new Promise((resolve) => {
       // send request and act upon result
       doRequest.end((err, response) => {
         if (this.onRequestCompleted) this.onRequestCompleted(response);
 
         if (!response || !response.ok) {
-          //let errors = response.body ? response.body.errors : 'Something bad happened';
-          //let statusCode = response.status;
+          // let errors = response.body ? response.body.errors : 'Something bad happened';
+          // let statusCode = response.status;
 
           if (this.onRequestError) this.onRequestError(response, err);
 
@@ -124,8 +100,8 @@ const API = {
 
         /*
           we resolve promise even if request
-          was not successfull to reduce boilerplat
-          + because we  typically don't want ui do
+          was not successful to reduce boilerplate
+          + because we typically don't want ui to
           have some specific behaviour in this case
          */
 
