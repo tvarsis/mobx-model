@@ -6,3 +6,4 @@ npm-debug.log
 _book
 .idea
 stats.json
+dist/
