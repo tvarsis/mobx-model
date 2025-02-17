@@ -79,7 +79,6 @@ const API = {
         doRequest.send(data);
       }
     } else if (method === "get" || method == "del") {
-      console.log(retryCount,'retryCount');
       doRequest.retry(retryCount).query(qs.stringify(data, { arrayFormat: "brackets" }));
     }
 
