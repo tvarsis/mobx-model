@@ -15,7 +15,7 @@ const API = {
   },
 
   request(options = {}) {
-    let { method, data, endpoint, onSuccess, onError, fileData, superagent, passedRequestHeaders } = options;
+    let { method, data, endpoint, onSuccess, onError, fileData, superagent, passedRequestHeaders, retry } = options;
     let requestData, requestHeaders, doRequest;
     const request = superagent || this.superagent || superagentDefault;
 
@@ -68,7 +68,7 @@ const API = {
 
       Object.assign(data, requestData);
     }
-
+    const retryCount = retry ? retry : 3;
     // just send as POST or prepare data for GET request
     if (method === "post" || method === "put" || method === "patch") {
       if (!isEmpty(fileData)) {
@@ -79,7 +79,8 @@ const API = {
         doRequest.send(data);
       }
     } else if (method === "get" || method == "del") {
-      doRequest.retry(3).query(qs.stringify(data, { arrayFormat: "brackets" }));
+      console.log(retryCount,'retryCount');
+      doRequest.retry(retryCount).query(qs.stringify(data, { arrayFormat: "brackets" }));
     }
 
     return new Promise((resolve) => {
