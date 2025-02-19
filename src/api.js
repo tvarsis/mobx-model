@@ -68,7 +68,8 @@ const API = {
 
       Object.assign(data, requestData);
     }
-    const retryCount = retry ? retry : 3;
+    const retryCount = retry ?? 3;
+    console.log(retryCount,'retryCount');
     // just send as POST or prepare data for GET request
     if (method === "post" || method === "put" || method === "patch") {
       if (!isEmpty(fileData)) {
