@@ -27,7 +27,7 @@ const initObservables = function(target) {
     ) {
         target.observables = {};
         extendObservable(target.observables, {
-            collection: observable.shallow([])
+            collection: observable.array([],{deep:false})
         });
     }
 };
@@ -52,7 +52,7 @@ class BaseModel {
    * single model when collection changes
    */
     static get = function(id) {
-        let items = result(this, "observables.$mobx.values.collection.value");
+        let items = this.observables?.collection;
         if (items && isObservableArray(items)) {
             let l = items.length;
             for (var i = 0; i < l; i++) {
