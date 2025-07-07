@@ -7,8 +7,6 @@ import {
 import { tableize, underscore, camelize } from "inflection";
 import filter from "lodash/filter";
 import uniqueId from "lodash/uniqueId";
-import result from "lodash/result";
-
 import initAttributes from "./init_attributes";
 import setAttributes from "./set_attributes";
 import initRelations from "./init_relations";
