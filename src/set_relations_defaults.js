@@ -1,6 +1,6 @@
 import { upperCaseFirstLetter, lowercaseFirstLetter } from './utils';
 import {
-  pluralize, underscore, tableize, foreign_key,
+  pluralize, underscore, tableize, foreignKey,
   singularize
 } from 'inflection';
 import isBoolean from 'lodash/isBoolean';
@@ -68,9 +68,9 @@ export default function setRelationsDefaults(model) {
     // foreign key with ids of relations
     if (!relation.foreignKey) {
       if (relation.isHasMany) {
-        relation.foreignKey = foreign_key(singularize(relation.propertyName)) + 's';
+        relation.foreignKey = foreignKey(singularize(relation.propertyName)) + 's';
       } else if (relation.isHasOne) {
-        relation.foreignKey = foreign_key(relation.propertyName);
+        relation.foreignKey = foreignKey(relation.propertyName);
       }
     }
 
