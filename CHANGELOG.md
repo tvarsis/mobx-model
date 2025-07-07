@@ -1,5 +1,13 @@
 ## Changelog
 
+### 5.0.1
+
+Upgraded dependencies
+
+### 5.0.0
+
+Upgraded MobX to version 6
+
 ### 0.0.32
 
 Add common RESTful actions to BaseModel
